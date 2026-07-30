@@ -94,9 +94,24 @@ async def main():
     ci_mode = "--ci" in sys.argv
 
     if ci_mode:
-        # Mode CI (GitHub Actions) : scan unique, pas de bot
+        # Mode CI (GitHub Actions) : scan unique avec bot pour réactions
         print("🚀 Immobilier Watcher (mode CI)")
+
+        has_bot_token = bool(os.getenv("DISCORD_BOT_TOKEN"))
+        if has_bot_token:
+            bot_task = asyncio.create_task(start_bot())
+            bot = get_bot()
+            try:
+                await asyncio.wait_for(bot.wait_until_ready_custom(), timeout=30)
+                print("🤖 Bot Discord connecté (réactions 👍👎)")
+            except asyncio.TimeoutError:
+                print("⚠️  Bot timeout, fallback webhook")
+
         await run_scan()
+
+        if has_bot_token and get_bot().is_ready():
+            await get_bot().close()
+
         print("🏁 Terminé")
         return
 
