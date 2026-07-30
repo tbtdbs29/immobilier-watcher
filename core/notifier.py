@@ -28,10 +28,14 @@ async def send_discord(prop):
 
 def _send_webhook(prop):
     """Fallback: envoi via webhook simple (pas de réactions)."""
-    webhook = os.getenv("DISCORD_WEBHOOK")
+    webhook = os.getenv("DISCORD_WEBHOOK", "").strip()
 
     if not webhook:
         print("   ⚠️  DISCORD_WEBHOOK non configuré dans .env")
+        return
+
+    if not webhook.startswith("http"):
+        print(f"   ⚠️  DISCORD_WEBHOOK invalide (doit commencer par https://)")
         return
 
     details = []
@@ -81,8 +85,8 @@ def _send_webhook(prop):
 
 def send_summary(new_count: int, total: int):
     """Envoie un résumé du scan sur Discord via webhook."""
-    webhook = os.getenv("DISCORD_WEBHOOK")
-    if not webhook:
+    webhook = os.getenv("DISCORD_WEBHOOK", "").strip()
+    if not webhook or not webhook.startswith("http"):
         return
 
     if new_count > 0:
