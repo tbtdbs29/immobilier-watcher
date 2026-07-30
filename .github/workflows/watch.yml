@@ -1,34 +1,27 @@
 name: Immobilier watcher
 
-
 on:
-
   schedule:
-
     - cron: "*/10 * * * *"
 
   workflow_dispatch:
-
 
 
 jobs:
 
   search:
 
-
     runs-on: ubuntu-latest
 
 
     steps:
 
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
 
       - name: Restore database cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
 
         with:
 
@@ -40,31 +33,25 @@ jobs:
             immobilier-database-
 
 
-
-      - name: Python setup
-
-        uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v6
 
         with:
 
           python-version: "3.12"
 
 
-
       - name: Install dependencies
 
-        run:
-
+        run: |
           pip install -r requirements.txt
-
 
 
       - name: Run watcher
 
         env:
 
-          DISCORD_WEBHOOK:
-            ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
         run:
 
