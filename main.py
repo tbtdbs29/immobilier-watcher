@@ -1,10 +1,12 @@
 import asyncio
 
+
 from core.config import load_config
 from core.filters import filter_property
 from core.deduplicate import remove_duplicates
 from core.database import exists, save
 from core.notifier import send_discord
+
 
 from providers.leboncoin import LeboncoinProvider
 from providers.bienici import BieniciProvider
@@ -15,13 +17,15 @@ from providers.ouestfrance import OuestFranceProvider
 
 async def main():
 
-    print("🚀 Démarrage immobilier watcher")
+    print(
+        "🚀 Démarrage immobilier watcher"
+    )
 
 
     config = load_config()
 
 
-    providers = [
+    providers=[
 
         LeboncoinProvider(config),
 
@@ -34,84 +38,77 @@ async def main():
     ]
 
 
-    all_properties = []
+    properties=[]
+
 
 
     for provider in providers:
 
+
         print(
-            f"🔎 Recherche {provider.name}"
+            "🔎 Recherche",
+            provider.name
         )
 
 
         try:
 
-            properties = await provider.fetch()
+            result = await provider.fetch()
 
 
             print(
-                f"{len(properties)} annonces trouvées"
+                len(result),
+                "annonces trouvées"
             )
 
 
-            all_properties.extend(
-                properties
+            properties.extend(
+                result
             )
 
 
-        except Exception as error:
+        except Exception as e:
 
             print(
-                f"Erreur {provider.name} :",
-                error
+                "Erreur",
+                provider.name,
+                ":",
+                e
             )
 
 
 
     print(
-        f"Total brut : {len(all_properties)}"
+        "Total brut:",
+        len(properties)
     )
 
 
-
-    all_properties = remove_duplicates(
-        all_properties
+    properties = remove_duplicates(
+        properties
     )
 
 
     print(
-        f"Après doublons : {len(all_properties)}"
+        "Après doublons:",
+        len(properties)
     )
 
 
 
-    valid_properties = []
+    for prop in properties:
 
 
-    for prop in all_properties:
-
-
-        if filter_property(
+        if not filter_property(
             prop,
             config
         ):
 
-            valid_properties.append(
-                prop
-            )
+            continue
 
 
 
-    print(
-        f"Après filtres : {len(valid_properties)}"
-    )
-
-
-
-    for prop in valid_properties:
-
-
-        unique_id = (
+        uid = (
             prop.source
             +
             "_"
@@ -120,16 +117,10 @@ async def main():
         )
 
 
-        if exists(unique_id):
+        if exists(uid):
 
             continue
 
-
-
-        print(
-            "Nouvelle annonce :",
-            prop.title
-        )
 
 
         send_discord(
@@ -143,7 +134,7 @@ async def main():
 
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
 
     asyncio.run(
         main()
