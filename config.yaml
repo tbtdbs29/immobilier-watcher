@@ -1,0 +1,103 @@
+# ==========================
+# Recherche immobilière
+# ==========================
+
+search:
+
+  city: "Brest"
+
+  # Quartiers prioritaires rive gauche
+  districts:
+    - "Liberté"
+    - "Siam"
+    - "Saint-Martin"
+    - "Jaurès"
+    - "Centre"
+    - "Recouvrance"
+    - "Quatre Moulins"
+
+  # Prix maximum charges comprises
+  max_price: 500
+
+  # Minimum T2
+  min_rooms: 2
+
+  # Minimum une vraie chambre
+  min_bedrooms: 1
+
+  # Surface minimum (évite les faux T2 minuscules)
+  min_surface: 20
+
+
+# ==========================
+# Type de logement
+# ==========================
+
+property:
+
+  allowed_types:
+    - "Appartement"
+
+  exclude_keywords:
+
+    # Colocations déguisées
+    - "colocation"
+    - "coloc"
+    - "chambre"
+    - "bail individuel"
+
+    # Locations qui ne correspondent pas
+    - "garage"
+    - "box"
+    - "parking seul"
+
+
+# ==========================
+# Performance énergétique
+# ==========================
+
+energy:
+
+  allowed_dpe:
+    - "A"
+    - "B"
+    - "C"
+
+
+# ==========================
+# Options supplémentaires
+# ==========================
+
+preferences:
+
+  parking_bonus: true
+
+  furnished_allowed: true
+
+  unfurnished_allowed: true
+
+
+# ==========================
+# Notifications
+# ==========================
+
+notifications:
+
+  discord:
+    enabled: true
+
+    # sera remplacé par une variable d'environnement
+    webhook_env: "DISCORD_WEBHOOK"
+
+
+# ==========================
+# Scraping
+# ==========================
+
+scraping:
+
+  interval_minutes: 10
+
+  timeout_seconds: 20
+
+  max_pages_per_site: 5
