@@ -26,6 +26,12 @@ jobs:
       - name: Install Playwright browsers + Chrome
         run: playwright install --with-deps chromium chrome
 
+      - name: Restore database
+        uses: actions/cache@v4
+        with:
+          path: storage/database.db
+          key: db-seen-listings
+
       - name: Run scan
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

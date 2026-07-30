@@ -92,10 +92,8 @@ async def main():
     ci_mode = "--ci" in sys.argv
 
     if ci_mode:
-        # Mode CI (GitHub Actions) : reset DB, scan unique, pas de bot
+        # Mode CI (GitHub Actions) : scan unique, pas de bot
         print("🚀 Immobilier Watcher (mode CI)")
-        print("🗑️  Remise à zéro de la base de données")
-        reset_db()
         await run_scan()
         print("🏁 Terminé")
         return
