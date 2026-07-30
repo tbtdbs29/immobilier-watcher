@@ -1,7 +1,6 @@
 from typing import List
 
 import httpx
-from bs4 import BeautifulSoup, soup
 
 from models.property import Property
 from providers.base import BaseProvider
@@ -48,14 +47,9 @@ class OuestFranceProvider(BaseProvider):
             response.text,
             "lxml"
         )
-        print(
-            soup.title
-        )
-
-        print(
-            soup.text[:500]
-        )
-
+        print("OUWEST HTML")
+        print(soup.title)
+        print(soup.text[:500])
 
         cards = soup.select(
             ".listing-item"
