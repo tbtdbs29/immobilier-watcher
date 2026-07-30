@@ -58,8 +58,10 @@ async def run_scan():
     print(f"📊 Après dédoublonnage: {len(properties)}")
 
     new_count = 0
+    filtered_count = 0
     for prop in properties:
         if not filter_property(prop, config):
+            filtered_count += 1
             continue
 
         uid = f"{prop.source}_{prop.external_id}"
@@ -74,7 +76,8 @@ async def run_scan():
         await send_discord(prop)
         save(prop, uid)
 
-    print(f"\n✅ Scan terminé: {new_count} nouvelle(s) annonce(s) envoyée(s)")
+    print(f"\n📊 Filtrées (rejetées): {filtered_count}")
+    print(f"✅ Scan terminé: {new_count} nouvelle(s) annonce(s) envoyée(s)")
 
     # Résumé Discord (toujours envoyé)
     send_summary(new_count, len(properties))

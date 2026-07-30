@@ -61,7 +61,7 @@ def save(prop, uid: str):
 
 def reset_db():
     """Supprimer toutes les annonces en base (remise à zéro)."""
-    db_path = os.path.join("storage", "database.db")
-    if os.path.exists(db_path):
-        os.remove(db_path)
-    Base.metadata.create_all(engine)
+    session = Session()
+    session.query(PropertyDB).delete()
+    session.commit()
+    session.close()

@@ -28,9 +28,11 @@ def filter_property(prop: Property, config: dict) -> bool:
         if prop.surface < search["min_surface"]:
             return False
 
-    # Type de bien
-    if prop.property_type not in config["property"]["allowed_types"]:
-        return False
+    # Type de bien (insensible à la casse, accepte aussi vide/None)
+    allowed_types = [t.lower() for t in config["property"]["allowed_types"]]
+    if prop.property_type:
+        if prop.property_type.lower() not in allowed_types:
+            return False
 
     # DPE (comparaison insensible à la casse)
     if prop.dpe:
