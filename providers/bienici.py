@@ -66,7 +66,8 @@ class BieniciProvider(BaseProvider):
 
 
             data = response.json()
-
+            print("BIENICI STRUCTURE")
+            print(data.keys())
 
 
         ads = data.get(

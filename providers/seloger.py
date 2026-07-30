@@ -56,7 +56,7 @@ class SelogerProvider(BaseProvider):
 
 
             data = response.json()
-
+            print(data.keys())
 
         for ad in data.get(
             "ads",
