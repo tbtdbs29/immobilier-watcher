@@ -21,6 +21,7 @@ from providers.barraine import BarraineProvider
 from providers.brestavenir import BrestAvenirProvider
 from providers.iad import IadProvider
 from providers.finistere_habitat import FinistereHabitatProvider
+from providers.ouestfrance import OuestFranceProvider
 
 
 async def run_scan():
@@ -39,6 +40,7 @@ async def run_scan():
         BrestAvenirProvider(config),
         IadProvider(config),
         FinistereHabitatProvider(config),
+        OuestFranceProvider(config),
     ]
 
     properties = []
