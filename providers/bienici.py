@@ -66,8 +66,13 @@ class BieniciProvider(BaseProvider):
 
 
             data = response.json()
-            print("BIENICI STRUCTURE")
-            print(data.keys())
+            print("BIENICI TOTAL")
+            print(data.get("total"))
+
+            print("PREMIERE ANNONCE")
+            print(
+                data.get("realEstateAds", [])[:1]
+            )
 
 
         ads = data.get(

@@ -56,8 +56,9 @@ class SelogerProvider(BaseProvider):
 
 
             data = response.json()
+            print("SELOGER TOTAL")
             print(data.keys())
-
+            print(data)
         for ad in data.get(
             "ads",
             []
