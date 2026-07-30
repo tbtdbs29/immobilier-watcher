@@ -155,9 +155,6 @@ class LeboncoinProvider(BaseProvider):
             print(f"[leboncoin] playwright: {e}")
 
         return ads_data
-            print(f"[leboncoin] erreur: {e}")
-
-        return properties
 
     def _parse_ad(self, ad: dict):
         try:
