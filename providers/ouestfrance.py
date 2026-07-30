@@ -9,7 +9,7 @@ from providers.base import BaseProvider
 
 class OuestFranceProvider(BaseProvider):
 
-    BASE_URL = "https://www.ouestfrance-immo.com/louer/appartement/brest-29-29019/"
+    BASE_URL = "https://www.ouestfrance-immo.com/immobilier/location/appartement/brest-29-29019/"
 
     @property
     def name(self):

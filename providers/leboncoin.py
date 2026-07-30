@@ -1,5 +1,6 @@
 from typing import List
 import json
+import os
 
 from playwright.async_api import async_playwright
 
@@ -31,6 +32,71 @@ class LeboncoinProvider(BaseProvider):
             f"&square={search['min_surface']}-all"
         )
 
+        # Essayer curl_cffi d'abord (marche sur CI sans Chrome)
+        ads_data = await self._fetch_curl_cffi(url)
+
+        # Fallback Playwright + Chrome (marche en local)
+        if not ads_data:
+            ads_data = await self._fetch_playwright(url)
+
+        print(f"[leboncoin] {len(ads_data)} annonces trouvées")
+
+        for ad in ads_data:
+            prop = self._parse_ad(ad)
+            if prop:
+                properties.append(prop)
+
+        return properties
+
+    async def _fetch_curl_cffi(self, url: str) -> list:
+        """Fetch via curl_cffi (impersonne Chrome TLS fingerprint)."""
+        try:
+            from curl_cffi.requests import AsyncSession
+
+            async with AsyncSession(impersonate="chrome") as session:
+                resp = await session.get(
+                    url,
+                    headers={
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                        "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8",
+                        "Cache-Control": "no-cache",
+                        "Sec-Fetch-Dest": "document",
+                        "Sec-Fetch-Mode": "navigate",
+                        "Sec-Fetch-Site": "none",
+                    },
+                    timeout=20,
+                )
+
+            if resp.status_code != 200:
+                return []
+
+            # Extraire __NEXT_DATA__ du HTML
+            html = resp.text
+            marker = '<script id="__NEXT_DATA__" type="application/json">'
+            start = html.find(marker)
+            if start == -1:
+                return []
+            start += len(marker)
+            end = html.find("</script>", start)
+            if end == -1:
+                return []
+
+            data = json.loads(html[start:end])
+            return (
+                data.get("props", {})
+                .get("pageProps", {})
+                .get("searchData", {})
+                .get("ads", [])
+            )
+        except ImportError:
+            return []
+        except Exception as e:
+            print(f"[leboncoin] curl_cffi: {e}")
+            return []
+
+    async def _fetch_playwright(self, url: str) -> list:
+        """Fetch via Playwright + Chrome (pour local avec IP résidentielle)."""
+        ads_data = []
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch(
@@ -54,9 +120,6 @@ class LeboncoinProvider(BaseProvider):
                 """)
                 page = await context.new_page()
 
-                # Intercepter les requêtes API pour capturer les données
-                ads_data = []
-
                 async def handle_response(response):
                     if "finder/search" in response.url or "api.leboncoin" in response.url:
                         try:
@@ -69,7 +132,6 @@ class LeboncoinProvider(BaseProvider):
                 page.on("response", handle_response)
 
                 await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                # Attendre que les annonces se chargent
                 await page.wait_for_timeout(5000)
 
                 # Si pas d'interception API, essayer __NEXT_DATA__
@@ -89,15 +151,10 @@ class LeboncoinProvider(BaseProvider):
                         pass
 
                 await browser.close()
-
-            print(f"[leboncoin] {len(ads_data)} annonces trouvées")
-
-            for ad in ads_data:
-                prop = self._parse_ad(ad)
-                if prop:
-                    properties.append(prop)
-
         except Exception as e:
+            print(f"[leboncoin] playwright: {e}")
+
+        return ads_data
             print(f"[leboncoin] erreur: {e}")
 
         return properties

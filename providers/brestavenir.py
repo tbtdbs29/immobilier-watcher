@@ -33,7 +33,7 @@ class BrestAvenirProvider(BaseProvider):
                 await context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 page = await context.new_page()
 
-                await page.goto(self.BASE_URL, wait_until="domcontentloaded", timeout=40000)
+                await page.goto(self.BASE_URL, wait_until="domcontentloaded", timeout=60000)
                 await page.wait_for_timeout(5000)
 
                 # Chercher les cartes d'annonces avec prix
