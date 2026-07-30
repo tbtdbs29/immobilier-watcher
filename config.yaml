@@ -8,11 +8,27 @@ search:
 
   # Quartiers prioritaires rive gauche
   districts:
+    # Rive gauche
     - "Liberté"
+    - "Place de la Liberté"
     - "Siam"
     - "Saint-Martin"
+    - "Saint-Marc"
+    - "Saint-Louis"
+    - "Gare"
+    - "Kerbernard"
+    - "Kerfautras"
     - "Jaurès"
+    - "Jean Jaurès"
+    - "Haut de Jaurès"
     - "Centre"
+    - "Centre-ville"
+    - "Port de commerce"
+    - "Pilier Rouge"
+    - "Place Guérin"
+    - "Keruscun"
+    # Rive droite
+    - "Brest"
     - "Recouvrance"
     - "Quatre Moulins"
 
@@ -58,10 +74,13 @@ property:
 
 energy:
 
+  # DPE autorisés (D est très courant à Brest, NS = Non Soumis)
   allowed_dpe:
     - "A"
     - "B"
     - "C"
+    - "D"
+    - "NS"
 
 
 # ==========================
@@ -96,7 +115,8 @@ notifications:
 
 scraping:
 
-  interval_minutes: 10
+  # Intervalle entre chaque scan (en minutes)
+  interval_minutes: 60
 
   timeout_seconds: 20
 

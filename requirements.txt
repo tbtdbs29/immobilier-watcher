@@ -19,11 +19,11 @@ sqlalchemy==2.0.38
 # Similarité pour détecter les doublons
 rapidfuzz==3.12.1
 
-# Notifications Discord
-discord-webhook==1.3.1
-
-# Tâches planifiées (utile en local)
+# Tâches planifiées
 apscheduler==3.11.0
 
-# Playwright uniquement pour SeLoger si nécessaire
+# Browser automation (LeBonCoin, BienIci)
 playwright==1.50.0
+
+# Discord bot (réactions 👍👎)
+discord.py==2.7.1

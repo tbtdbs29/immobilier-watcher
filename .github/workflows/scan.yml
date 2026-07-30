@@ -1,0 +1,35 @@
+name: Scan immobilier
+
+on:
+  schedule:
+    # Toutes les heures de 7h à 23h (UTC, donc 9h-1h heure française)
+    - cron: "0 7-23 * * *"
+  workflow_dispatch: # Permet de lancer manuellement
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers + Chrome
+        run: playwright install --with-deps chromium chrome
+
+      - name: Run scan
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}
+          DISCORD_LIKED_CHANNEL_ID: ${{ secrets.DISCORD_LIKED_CHANNEL_ID }}
+        run: python main.py --ci

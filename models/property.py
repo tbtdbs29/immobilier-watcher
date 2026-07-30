@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Property(BaseModel):
@@ -44,6 +44,13 @@ class Property(BaseModel):
     # Prix
 
     price: Optional[int] = None
+
+    @field_validator("price", mode="before")
+    @classmethod
+    def coerce_price(cls, v):
+        if v is None:
+            return None
+        return int(round(v))
 
     charges_included: Optional[bool] = None
 
